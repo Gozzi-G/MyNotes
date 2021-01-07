@@ -31,7 +31,21 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NotesViewHol
         holder.textViewTitle.setText(note.getTitle());
         holder.textViewDescription.setText(note.getDescription());
         holder.textViewDayOfWeak.setText(note.getDayOfWeak());
-        holder.textViewPriority.setText(String.format("%s",note.getPriority()));
+
+        int colorID;
+        int priority = note.getPriority();
+        switch (priority) {
+            case 1:
+                colorID = holder.itemView.getResources().getColor(android.R.color.holo_red_dark);
+                break;
+            case 2:
+                colorID = holder.itemView.getResources().getColor(android.R.color.holo_orange_dark);
+                break;
+            default:
+                colorID = holder.itemView.getResources().getColor(android.R.color.holo_green_dark);
+                break;
+        }
+        holder.textViewTitle.setBackgroundColor(colorID);
     }
 
     @Override
@@ -39,12 +53,11 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NotesViewHol
         return notes.size();
     }
 
-    class  NotesViewHolder extends RecyclerView.ViewHolder {
+    class NotesViewHolder extends RecyclerView.ViewHolder {
 
         private TextView textViewTitle;
         private TextView textViewDescription;
         private TextView textViewDayOfWeak;
-        private TextView textViewPriority;
 
         public NotesViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -52,7 +65,6 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NotesViewHol
             textViewTitle = itemView.findViewById(R.id.textViewTitle);
             textViewDescription = itemView.findViewById(R.id.textViewDescription);
             textViewDayOfWeak = itemView.findViewById(R.id.textViewDayOfWeak);
-            textViewPriority = itemView.findViewById(R.id.textViewPriority);
         }
     }
 }

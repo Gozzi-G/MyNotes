@@ -20,7 +20,7 @@ public class Note {
     }
 
     public String getDescription() {
-        return getDescription();
+        return description;
     }
 
     public String getDayOfWeak() {
