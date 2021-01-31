@@ -2,6 +2,8 @@ package com.example.mynotes;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.lifecycle.ViewModelProviders;
 
 import android.content.ContentValues;
 import android.content.Intent;
@@ -26,14 +28,18 @@ public class AddNoteActivity extends AppCompatActivity {
 //    private NotesDBHelper dbHelper;
 //    private SQLiteDatabase database;
 
-    private NotesDataBase dataBase;
+//    private NotesDataBase dataBase;
+
+    private MainViewModel viewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_note);
 
-        dataBase = NotesDataBase.getInstance(this);
+//        dataBase = NotesDataBase.getInstance(this);
+
+        viewModel = ViewModelProviders.of(this).get(MainViewModel.class);
 
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
@@ -73,7 +79,8 @@ public class AddNoteActivity extends AppCompatActivity {
 
         if(isFilled(title, description)) {
             Note note = new Note(title, description, dayOfWeak, priority);
-            dataBase.notesDao().insertNote(note);
+//            dataBase.notesDao().insertNote(note);
+            viewModel.insetNote(note);
             Intent intent = new Intent(this, MainActivity.class);
             startActivity(intent);
         } else {

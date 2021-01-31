@@ -3,6 +3,10 @@ package com.example.mynotes;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -23,14 +27,17 @@ public class MainActivity extends AppCompatActivity {
 //    private NotesDBHelper dbHelper;
 //    private SQLiteDatabase database;
 
-    private NotesDataBase dataBase;
+//    private NotesDataBase dataBase;
+
+    private MainViewModel viewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        dataBase = NotesDataBase.getInstance(this);
+//        dataBase = NotesDataBase.getInstance(this);
+        viewModel = ViewModelProviders.of(this).get(MainViewModel.class);
 
         ActionBar actionBar = getSupportActionBar();
 
@@ -86,10 +93,12 @@ public class MainActivity extends AppCompatActivity {
 //        getData();
 //        adapter.notifyDataSetChanged();
 
-        Note note = notes.get(position);
-        dataBase.notesDao().deleteNote(note);
-        getData();
-        adapter.notifyDataSetChanged();
+        Note note = adapter.getNotes().get(position);
+//        dataBase.notesDao().deleteNote(note);
+
+//        getData();
+//        adapter.notifyDataSetChanged();
+        viewModel.deleteNote(note);
     }
 
     public void onClickAddNote(View view) {
@@ -117,8 +126,14 @@ public class MainActivity extends AppCompatActivity {
     // ROOM
 
     private void getData() {
-        List<Note> notesFromDB = dataBase.notesDao().getAllNotes();
-        notes.clear();
-        notes.addAll(notesFromDB);
+//        LiveData<List<Note>> notesFromDB = dataBase.notesDao().getAllNotes();
+        LiveData<List<Note>> notesFromDB = viewModel.getNotes();
+        notesFromDB.observe(this, new Observer<List<Note>>() {
+            @Override
+            public void onChanged(List<Note> notesFromLiveData) {
+                adapter.setNotes(notesFromLiveData);
+            }
+        });
+
     }
 }
